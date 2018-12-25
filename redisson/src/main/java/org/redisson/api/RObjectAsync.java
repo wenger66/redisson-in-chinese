@@ -18,7 +18,7 @@ package org.redisson.api;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Base interface for all Redisson objects
+ * 所有Redisson对象的基础接口
  *
  * @author Nikita Koksharov
  *
