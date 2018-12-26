@@ -27,6 +27,9 @@ import org.redisson.command.CommandAsyncExecutor;
 import org.redisson.pubsub.CountDownLatchPubSub;
 
 /**
+ * 分布式的闩锁实现 {@link java.util.concurrent.CountDownLatch}
+ * 相比jdk实现的优点是计数可以重置 {@link #trySetCount}
+ * 这个对象没有继承RedissonExpirable，为什么不需要过期
  * Distributed alternative to the {@link java.util.concurrent.CountDownLatch}
  *
  * It has a advantage over {@link java.util.concurrent.CountDownLatch} --
@@ -118,6 +121,13 @@ public class RedissonCountDownLatch extends RedissonObject implements RCountDown
         get(countDownAsync());
     }
 
+    /**
+     * 对应eval的命令参数
+     * KEYS[1]：getName()
+     * KEYS[2]: getChannelName()
+     * ARGV[1]: zeroCountMessage
+     * @return
+     */
     @Override
     public RFuture<Void> countDownAsync() {
         return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, RedisCommands.EVAL_BOOLEAN,

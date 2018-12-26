@@ -19,9 +19,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Base interface for all Redisson objects
- * which support expiration or TTL
- * 
+ * 所有Redisson对象中支持过期特性的对象基础接口
  *
  * @author Nikita Koksharov
  *

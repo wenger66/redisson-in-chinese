@@ -77,7 +77,20 @@ public interface CommandAsyncExecutor {
     <T, R> RFuture<R> evalReadAsync(String key, Codec codec, RedisCommand<T> evalCommandType, String script, List<Object> keys, Object ... params);
 
     <T, R> RFuture<R> evalReadAsync(MasterSlaveEntry entry, Codec codec, RedisCommand<T> evalCommandType, String script, List<Object> keys, Object ... params);
-    
+
+    /**
+     * EVAL SCRIPT KEY_NUM KEY1 KEY2 ... KEYN ARG1 ARG2 ....
+     * 在 lua 脚本中，数组下标是从 1 开始，所以通过 KEYS[1] 就可以得到 第一个 key，通过 ARGV[1] 就可以得到第一个附加参数
+     * @param key 感觉没有用
+     * @param codec
+     * @param evalCommandType
+     * @param script 对应eval命令入参script
+     * @param keys 对应eval命令入参key1,key2...
+     * @param params 对应eval命令入参arg1,arg2...
+     * @param <T>
+     * @param <R>
+     * @return
+     */
     <T, R> RFuture<R> evalWriteAsync(String key, Codec codec, RedisCommand<T> evalCommandType, String script, List<Object> keys, Object ... params);
 
     <T, R> RFuture<R> evalWriteAsync(MasterSlaveEntry entry, Codec codec, RedisCommand<T> evalCommandType, String script, List<Object> keys, Object ... params);

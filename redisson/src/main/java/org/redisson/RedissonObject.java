@@ -98,13 +98,33 @@ public abstract class RedissonObject implements RObject {
     public void rename(String newName) {
         get(renameAsync(newName));
     }
-    
+
+    /**
+     * 计算本对象的内存占用
+     * Redis 4.0开始支持memory usage命令，计算key和value占用的内存
+     * 127.0.0.1:6379> memory usage {key}
+     * (integer) 204
+     * @return
+     */
     @Override
     public RFuture<Long> sizeInMemoryAsync() {
         return commandExecutor.writeAsync(getName(), RedisCommands.MEMORY_USAGE, getName());
     }
-    
+
+    /**
+     * 通过lua脚本计算多个key的内存占用
+     * Redis 4.0开始支持memory usage命令，计算key和value占用的内存
+     * 127.0.0.1:6379> memory usage {key}
+     * (integer) 204
+     * @param keys
+     * @return
+     */
     public final RFuture<Long> sizeInMemoryAsync(List<Object> keys) {
+        /**
+         * 127.0.0.1:6379> memory usage user:444
+         * (nil)
+         * 不存在的key值的应对方式是”if size ~= false then"
+         */
         return commandExecutor.evalWriteAsync((String)keys.get(0), StringCodec.INSTANCE, RedisCommands.EVAL_LONG,
                   "local total = 0;"
                 + "for j = 1, #KEYS, 1 do "

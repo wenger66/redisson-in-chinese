@@ -1,3 +1,2 @@
 # redisson-in-chinese
-chinese annotation for redisson
-============
+选择redisson-3.9.1进行注释
