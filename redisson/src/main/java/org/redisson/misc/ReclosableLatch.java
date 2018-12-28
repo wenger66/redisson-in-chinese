@@ -42,6 +42,12 @@ public class ReclosableLatch extends AbstractQueuedSynchronizer {
       setState(defaultOpen ? OPEN_STATE : CLOSED_STATE);
    }
 
+   /**
+    * 尝试获取共享资源。负数表示失败；0表示成功，但没有剩余可用资源；正数表示成功，且有剩余资源
+    *
+    * @param ignored
+    * @return
+    */
    @Override
    public final int tryAcquireShared(int ignored) {
       // return 1 if we allow the requestor to proceed, -1 if we want the requestor to block.
@@ -83,6 +89,29 @@ public class ReclosableLatch extends AbstractQueuedSynchronizer {
     }
 
 
+   /**
+    * Attempts to acquire in shared mode, aborting if interrupted, and
+    * failing if the given timeout elapses.  Implemented by first
+    * checking interrupt status, then invoking at least once {@link
+    * #tryAcquireShared}, returning on success.  Otherwise, the
+    * thread is queued, possibly repeatedly blocking and unblocking,
+    * invoking {@link #tryAcquireShared} until success or the thread
+    * is interrupted or the timeout elapses.
+    *
+    * @param arg the acquire argument.  This value is conveyed to
+    *        {@link #tryAcquireShared} but is otherwise uninterpreted
+    *        and can represent anything you like.
+    * @param nanosTimeout the maximum number of nanoseconds to wait
+    * @return {@code true} if acquired; {@code false} if timed out
+    *
+    *
+    *
+    * @throws InterruptedException if the current thread is interrupted
+    * @param time
+    * @param unit
+    * @return
+    * @throws InterruptedException
+    */
    public final boolean await(long time, TimeUnit unit) throws InterruptedException {
       return tryAcquireSharedNanos(1, unit.toNanos(time)); // the 1 is a dummy value that is not used.
    }
