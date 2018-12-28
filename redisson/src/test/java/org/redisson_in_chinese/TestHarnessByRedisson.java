@@ -91,6 +91,10 @@ public class TestHarnessByRedisson {
                             task.run();
                         } finally {
                             endGate.countDown();
+                            if( Thread.currentThread().getId() % 5 ==0) {
+                                boolean result = endGate.trySetCount(nThreads);
+                                System.out.printf("try set count result %s%n", result);
+                            }
                         }
                     } catch (InterruptedException ignored) {
                     }
