@@ -122,10 +122,22 @@ public class RedissonCountDownLatch extends RedissonObject implements RCountDown
     }
 
     /**
-     * 对应eval的命令参数
-     * KEYS[1]：getName()
-     * KEYS[2]: getChannelName()
-     * ARGV[1]: zeroCountMessage
+     * countdown方法的异步实现
+     *
+     * <p>
+     * 实现方法：
+     * 倒计时闩锁集中计数是一个String，countdown通过lua脚本实现。
+     * 1 - <code>decr key</code>, 递减倒计时闩锁集中计数，返回当前计数
+     * 2 - 如果当前计数是0，<code>del key</code>，删除倒计时闩锁集中计数键
+     * 3 - 如果当前计数是0，<code>publish channel message</code>，发布倒计时闩锁计数清0的消息
+     * </p>
+     * <p>
+     * 命令参数：
+     * key - 倒计时闩锁的名称
+     * channel - 倒计时闩锁的通道："redisson_countdownlatch__channel__{" + getName() + "}"
+     * message - 0：zeroCountMessage
+     * </p>
+     *
      * @return
      */
     @Override
@@ -150,6 +162,17 @@ public class RedissonCountDownLatch extends RedissonObject implements RCountDown
         return get(getCountAsync());
     }
 
+    /**
+     * 获取倒计时闩锁集中计数的异步实现
+     *
+     * <p>
+     * 实现方法：
+     * 倒计时闩锁集中计数是一个String。
+     * <code>get key</code>，获取倒计时闩锁集中计数
+     * </p>
+     *
+     * @return
+     */
     @Override
     public RFuture<Long> getCountAsync() {
         return commandExecutor.writeAsync(getName(), LongCodec.INSTANCE, RedisCommands.GET_LONG, getName());
@@ -160,6 +183,12 @@ public class RedissonCountDownLatch extends RedissonObject implements RCountDown
         return get(trySetCountAsync(count));
     }
 
+    /**
+     *
+     * @param count - number of times <code>countDown</code> must be invoked
+     *        before threads can pass through <code>await</code>
+     * @return
+     */
     @Override
     public RFuture<Boolean> trySetCountAsync(long count) {
         return commandExecutor.evalWriteAsync(getName(), LongCodec.INSTANCE, RedisCommands.EVAL_BOOLEAN,

@@ -53,8 +53,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
 
 /**
- * Low-level Redis client
- * 
+ * 低级别的Redis命令行实现
  * @author Nikita Koksharov
  *
  */
