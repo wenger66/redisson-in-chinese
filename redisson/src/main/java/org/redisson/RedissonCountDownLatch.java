@@ -44,14 +44,23 @@ public class RedissonCountDownLatch extends RedissonObject implements RCountDown
 
     private final UUID id;
 
+    /**
+     * @param commandExecutor - 命令执行器
+     * @param name - 倒计时闩锁名称
+     */
     protected RedissonCountDownLatch(CommandAsyncExecutor commandExecutor, String name) {
         super(commandExecutor, name);
         this.id = commandExecutor.getConnectionManager().getId();
     }
 
+    /**
+     * 等待倒计时闩锁的实现
+     * @throws InterruptedException
+     */
     public void await() throws InterruptedException {
         RFuture<RedissonCountDownLatchEntry> future = subscribe();
         try {
+            // 对subscribe
             commandExecutor.syncSubscription(future);
 
             while (getCount() > 0) {
@@ -112,10 +121,18 @@ public class RedissonCountDownLatch extends RedissonObject implements RCountDown
         return PUBSUB.getEntry(getEntryName());
     }
 
+    /**
+     * 订阅倒计时闩锁的消息
+     * @return
+     */
     private RFuture<RedissonCountDownLatchEntry> subscribe() {
         return PUBSUB.subscribe(getEntryName(), getChannelName(), commandExecutor.getConnectionManager().getSubscribeService());
     }
 
+    /**
+     * 取消订阅倒计时门闩的消息
+     * @param future
+     */
     private void unsubscribe(RFuture<RedissonCountDownLatchEntry> future) {
         PUBSUB.unsubscribe(future.getNow(), getEntryName(), getChannelName(), commandExecutor.getConnectionManager().getSubscribeService());
     }

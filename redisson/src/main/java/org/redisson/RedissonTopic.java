@@ -43,6 +43,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
 
 /**
+ * 分布式消息主题实现
  * Distributed topic implementation. Messages are delivered to all message listeners across Redis cluster.
  *
  * @author Nikita Koksharov

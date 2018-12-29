@@ -18,7 +18,9 @@ package org.redisson.client;
 import org.redisson.client.protocol.pubsub.PubSubType;
 
 /**
- * 
+ * PubSub类消息的监听
+ * 增加一个接口
+ * onPatternMessage
  * @author Nikita Koksharov
  *
  */

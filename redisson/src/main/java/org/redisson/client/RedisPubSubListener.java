@@ -19,7 +19,10 @@ import org.redisson.api.listener.MessageListener;
 import org.redisson.client.protocol.pubsub.PubSubType;
 
 /**
- * 
+ * PubSub类消息的监听
+ * 增加两个接口
+ * onStatus
+ * onPatternMessage
  * @author Nikita Koksharov
  *
  * @param <V> value type

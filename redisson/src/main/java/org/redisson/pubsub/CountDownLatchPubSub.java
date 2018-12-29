@@ -20,7 +20,7 @@ import org.redisson.RedissonCountDownLatchEntry;
 import org.redisson.misc.RPromise;
 
 /**
- * 
+ * 倒计时闩锁的通知订阅
  * @author Nikita Koksharov
  *
  */
@@ -31,6 +31,11 @@ public class CountDownLatchPubSub extends PublishSubscribe<RedissonCountDownLatc
         return new RedissonCountDownLatchEntry(newPromise);
     }
 
+    /**
+     * 由父类处理过滤掉非本channel的消息
+     * @param value
+     * @param message
+     */
     @Override
     protected void onMessage(RedissonCountDownLatchEntry value, Long message) {
         if (message.equals(RedissonCountDownLatch.zeroCountMessage)) {
